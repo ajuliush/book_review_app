@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AccountController extends Controller
 {
@@ -71,17 +73,53 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users,email,' . Auth::user()->id,
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048' // Updated input name
         ]);
+
         // Check if the validation fails
         if ($validator->fails()) {
             return redirect()->route('account.profile')->withInput()->withErrors($validator);
         }
+
         $user = User::find(Auth::user()->id);
         $user->name = $request->name;
         $user->email = $request->email;
+
+        // Handle the profile image upload
+        if ($request->hasFile('image')) {
+            // Get the file from the request
+            $file = $request->file('image');
+
+            // Define the file path
+            $path = 'uploads/profile_images/';
+
+            // Generate a unique file name
+            $fileName = time() . '_' . $file->getClientOriginalName();
+
+            // Move the file to the desired location
+            $file->move(public_path($path), $fileName);
+
+            // Delete the old image if exists
+            if ($user->profile_image) {
+                $oldImagePath = public_path($path) . $user->profile_image;
+                if (file_exists($oldImagePath)) {
+                    @unlink($oldImagePath); // Use @ to suppress error if file does not exist
+                }
+            }
+
+            // Save the new image path to the database
+            $user->profile_image = $fileName;
+            $manager = new ImageManager(Driver::class);
+            $img =  $manager->read($path . $fileName);
+            $img->cover(150, 150);
+            $img->save($path . $fileName);
+        }
+
         $user->save();
-        return redirect()->route('account.profile')->with('success', 'Profile update successfully');
+
+        return redirect()->route('account.profile')->with('success', 'Profile updated successfully');
     }
+
     public function logout()
     {
         Auth::logout();
