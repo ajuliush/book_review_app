@@ -36,6 +36,16 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="adminCheckbox" name="role" value="admin" onclick="fillAdminCredentials()">
+                                        <label class="form-check-label" for="adminCheckbox">Admin</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="userCheckbox" name="role" value="user" onclick="fillUserCredentials()">
+                                        <label class="form-check-label" for="userCheckbox">User</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
                                     <div class="d-grid">
                                         <button class="btn bsb-btn-xl btn-primary py-3" type="submit">Log In Now</button>
                                     </div>
@@ -56,4 +66,18 @@
         </div>
     </div>
 </section>
+<script>
+    function fillAdminCredentials() {
+        document.getElementById('email').value = 'zijyhiboq@mailinator.com';
+        document.getElementById('password').value = 'zijyhiboq@mailinator.com';
+        document.getElementById('userCheckbox').checked = false; // Uncheck the User checkbox if it was checked
+    }
+
+    function fillUserCredentials() {
+        document.getElementById('email').value = 'zagawujof@mailinator.com';
+        document.getElementById('password').value = 'zagawujof@mailinator.com';
+        document.getElementById('adminCheckbox').checked = false; // Uncheck the Admin checkbox if it was checked
+    }
+
+</script>
 @endsection

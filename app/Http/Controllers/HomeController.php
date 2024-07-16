@@ -24,11 +24,20 @@ class HomeController extends Controller
     }
     public function details($id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::with(['reviews' => function ($query) {
+            $query->where('status', 1)->with('user');
+        }])->findOrFail($id);
+
         if ($book->status == 0) {
             abort(404);
         }
-        $relatedBooks = Book::where('status', 1)->take(3)->where('id', '!=', $id)->inRandomOrder()->get();
+
+        $relatedBooks = Book::where('status', 1)
+            ->where('id', '!=', $id)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
         return view('details', compact('book', 'relatedBooks'));
     }
     public function saveReview(Request $request)
