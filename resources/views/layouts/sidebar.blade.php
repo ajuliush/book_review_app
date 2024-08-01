@@ -9,6 +9,7 @@
             </div>
             <div class="h5 text-center">
                 <strong>{{Auth::user()->name}}</strong>
+                <p style="font-size: 15px">({{ Auth::user()->role }})</p>
                 <p class="h6 mt-2 text-muted">{{$status1ReviewCount}} Reviews</p>
             </div>
         </div>
@@ -21,6 +22,9 @@
 
             <ul class="nav flex-column">
                 @if(Auth::user()->role == 'admin')
+                <li class="nav-item">
+                    <a href="{{route('users.index')}}">Users</a>
+                </li>
                 <li class="nav-item">
                     <a href="{{route('books.index')}}">Books</a>
                 </li>
