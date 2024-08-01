@@ -68,14 +68,14 @@
 </section>
 <script>
     function fillAdminCredentials() {
-        document.getElementById('email').value = 'zijyhiboq@mailinator.com';
-        document.getElementById('password').value = 'zijyhiboq@mailinator.com';
+        document.getElementById('email').value = 'admin@gmail.com';
+        document.getElementById('password').value = '12345678';
         document.getElementById('userCheckbox').checked = false; // Uncheck the User checkbox if it was checked
     }
 
     function fillUserCredentials() {
-        document.getElementById('email').value = 'zagawujof@mailinator.com';
-        document.getElementById('password').value = 'zagawujof@mailinator.com';
+        document.getElementById('email').value = 'user@gmail.com';
+        document.getElementById('password').value = '12345678';
         document.getElementById('adminCheckbox').checked = false; // Uncheck the Admin checkbox if it was checked
     }
 
