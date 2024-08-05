@@ -24,9 +24,14 @@ class HomeController extends Controller
     }
     public function details($id)
     {
-        $book = Book::with(['reviews' => function ($query) {
+        return $book = Book::with(['reviews' => function ($query) {
             $query->where('status', 1)->with('user');
-        }])->findOrFail($id);
+        }])
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 1);
+            }])
+            ->findOrFail($id);
+
 
         if ($book->status == 0) {
             abort(404);
@@ -34,9 +39,11 @@ class HomeController extends Controller
 
         $relatedBooks = Book::where('status', 1)
             ->where('id', '!=', $id)
+            ->withCount('reviews') // This will add the review count as reviews_count
             ->inRandomOrder()
             ->take(3)
             ->get();
+
 
         return view('details', compact('book', 'relatedBooks'));
     }
