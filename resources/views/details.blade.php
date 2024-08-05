@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="theme-font text-muted">(0 Review)</span>
+                        <span class="theme-font text-muted">({{ $book->reviews_count }} Review)</span>
                     </div>
 
                     <div class="content mt-3">
@@ -87,7 +87,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <span class="theme-font text-muted">(0)</span>
+                                        <span class="theme-font text-muted">({{ $relatedBook->reviews_count }})</span>
                                     </div>
                                 </div>
                             </div>
@@ -207,13 +207,13 @@
     $("#bookReviewForm").submit(function(e) {
         e.preventDefault();
         $.ajax({
-            url: '{{route("book.saveReview")}}',
-            type: 'POST',
-            data: $("#bookReviewForm").serializeArray(),
-            headers: {
-                'X-CSRF-TOKEN': '{{csrf_token()}}',
-            },
-            success: function(response) {
+            url: '{{route("book.saveReview")}}'
+            , type: 'POST'
+            , data: $("#bookReviewForm").serializeArray()
+            , headers: {
+                'X-CSRF-TOKEN': '{{csrf_token()}}'
+            , }
+            , success: function(response) {
                 if (response.status == false) {
                     var errors = response.errors;
                     if (errors.review) {
@@ -229,5 +229,6 @@
             }
         });
     });
+
 </script>
 @endsection
