@@ -15,7 +15,9 @@ class BookController extends Controller
     // Code to list all books
     public function index(Request $request)
     {
-        $books = Book::orderBy('created_at', 'DESC');
+        $books = Book::withCount(['reviews' => function ($query) {
+            $query->where('status', 1);
+        }])->withSum('reviews', 'rating')->orderBy('created_at', 'DESC');
         if (!empty($request->keyword)) {
             $books->where('title', 'like', '%' . $request->keyword . '%');
         }

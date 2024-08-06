@@ -32,10 +32,18 @@
                         <tbody>
                             @if($books->isNotEmpty())
                             @foreach($books as $book)
+                            @php
+                            if ($book->reviews_count > 0) {
+                            $avgRating = $book->reviews_sum_rating/$book->reviews_count;
+                            } else {
+                            $avgRating = 0;
+                            }
+                            $avgRaringPercents = ($avgRating*100)/5;
+                            @endphp
                             <tr>
                                 <td>{{$book->title}}</td>
                                 <td>{{$book->author}}</td>
-                                <td>3.0 (3 Reviews)</td>
+                                <td>{{ number_format($avgRating, 2) }} ({{ ($book->reviews_count > 1) ? $book->reviews_count. ' Reviews' :  $book->reviews_count. ' Review'}})</td>
                                 <td>
                                     @if ($book->status == 1)
                                     <span class="text-success">Active</span>
@@ -81,20 +89,21 @@
     function deleteBook(id) {
         if (confirm('Are you sure you want to delete this')) {
             $.ajax({
-                url: '{{route("books.destroy")}}',
-                type: 'delete',
-                data: {
+                url: '{{route("books.destroy")}}'
+                , type: 'delete'
+                , data: {
                     id: id
-                },
-                headers: {
-                    'X-CSRF-TOKEN': '{{csrf_token()}}',
-                },
-                success: function(response) {
+                }
+                , headers: {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                , }
+                , success: function(response) {
                     window.location.href = '{{route("books.index")}}';
                 }
             });
 
         }
     }
+
 </script>
 @endsection
