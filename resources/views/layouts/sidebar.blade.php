@@ -10,7 +10,7 @@
             <div class="h5 text-center">
                 <strong>{{Auth::user()->name}}</strong>
                 <p style="font-size: 15px">({{ Auth::user()->role }})</p>
-                <p class="h6 mt-2 text-muted">{{$status1ReviewCount}} Reviews</p>
+                <p class="h6 mt-2 text-muted">{{Auth::user()->reviews->count()}} Reviews</p>
             </div>
         </div>
     </div>

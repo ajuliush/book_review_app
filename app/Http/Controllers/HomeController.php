@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $books = Book::orderBy('created_at', 'DESC');
+        $books = Book::withCount('reviews')->withSum('reviews', 'rating')->orderBy('created_at', 'DESC');
 
         if (!empty($request->keyword)) {
             $books->where('title', 'like', '%' . $request->keyword . '%');
@@ -24,12 +24,12 @@ class HomeController extends Controller
     }
     public function details($id)
     {
-        return $book = Book::with(['reviews' => function ($query) {
+        $book = Book::with(['reviews' => function ($query) {
             $query->where('status', 1)->with('user');
         }])
             ->withCount(['reviews' => function ($query) {
                 $query->where('status', 1);
-            }])
+            }])->withSum('reviews', 'rating')
             ->findOrFail($id);
 
 
@@ -39,7 +39,10 @@ class HomeController extends Controller
 
         $relatedBooks = Book::where('status', 1)
             ->where('id', '!=', $id)
-            ->withCount('reviews') // This will add the review count as reviews_count
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 1);
+            }])
+            ->withSum('reviews', 'rating') // This will add the review count as reviews_count
             ->inRandomOrder()
             ->take(3)
             ->get();
